@@ -1,1 +1,0 @@
-db_uri = "mongodb+srv://lapini:I5UuQdlUknxgTxQ7@cluster0.uyd5x.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
