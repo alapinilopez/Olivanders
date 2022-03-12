@@ -130,4 +130,4 @@ dmypy.json
 .pyre/
 
 #Hiding files
-.uri.py
+uri.py
