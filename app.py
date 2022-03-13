@@ -5,7 +5,7 @@ from flask_restful import Resource, Api
 import os
 
 from repository.stock import Inventory
-
+from repository.create import Create
 
 from flask import Flask
 app = Flask(__name__)
@@ -14,6 +14,7 @@ api = Api(app)
 
 api.add_resource(Root, "/")
 api.add_resource(Inventory, "/inventory")
+api.add_resource(Create, "/add-item")
 
 
 if __name__ == '__main__':
