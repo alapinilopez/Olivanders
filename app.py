@@ -1,7 +1,9 @@
 import configparser
 # from resources.items import Inventario
-# from repository.read import Inventario, Inventory
+from repository.read import Inventory
 from resources.welcome import Root
+from repository.add_item import Insert
+
 from flask_restful import Resource, Api
 from repository.uri import db_uri
 import os
@@ -15,9 +17,10 @@ api = Api(app)
 
 
 api.add_resource(Root, "/")
-# api.add_resource(Inventory, "/inventory")
+api.add_resource(Inventory, "/inventory")
+api.add_resource(Insert, "add-item")
 
-mongodb_client = PyMongo(app, "mongodb+srv://lapini:I5UuQdlUknxgTxQ7@cluster0.uyd5x.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+mongodb_client = PyMongo(app, db_uri)
 db = mongodb_client.db
 
 config = configparser.ConfigParser()
@@ -26,6 +29,6 @@ config.read(os.path.abspath(os.path.join(".ini")))
 if __name__ == '__main__':
     app.run(debug=True)
     app.config["DEBUG"] = True
-    app.config["MONGO_URI"] = "mongodb+srv://lapini:I5UuQdlUknxgTxQ7@cluster0.uyd5x.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+    app.config["MONGO_URI"] = db_uri
 
     app.run()
