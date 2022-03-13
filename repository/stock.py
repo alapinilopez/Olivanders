@@ -5,7 +5,7 @@ inventory = [ {"name": "Aged_brie", "quality": 3, "sell_in": 4 },
 {"name": "Aged_brie", "quality": 12, "sell_in": 0 }, 
 {"name": "Conjured", "quality": 6, "sell_in": 10 } ]
 
-class Inventario(Resource):
+class Inventory(Resource):
 
     def get(self):
         return inventory
