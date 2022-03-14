@@ -17,7 +17,7 @@ api = Api(app)
 api.add_resource(Root, "/")
 # api.add_resource(Inventory, "/inventory")
 
-mongodb_client = PyMongo(app, "mongodb+srv://lapini:I5UuQdlUknxgTxQ7@cluster0.uyd5x.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+mongodb_client = PyMongo(app, db_uri)
 db = mongodb_client.db
 
 config = configparser.ConfigParser()
@@ -26,6 +26,6 @@ config.read(os.path.abspath(os.path.join(".ini")))
 if __name__ == '__main__':
     app.run(debug=True)
     app.config["DEBUG"] = True
-    app.config["MONGO_URI"] = "mongodb+srv://lapini:I5UuQdlUknxgTxQ7@cluster0.uyd5x.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+    app.config["MONGO_URI"] = db_uri
 
     app.run()
