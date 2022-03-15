@@ -1,12 +1,11 @@
-from flask import current_app, g
 import flask
-from flask_pymongo import PyMongo
-from app import db
+import pymongo
+import mongoengine
 
-from app import *
-from flask_restful import Resource, Api
+
+from flask_restful import Resource
 
 class Inventory(Resource):
     def get_all_items():
         find_all = db.Flask.find()
-        return flask.jsonify([item for item in find_all])
+        return Flask.jsonify([item for item in find_all])

@@ -1,10 +1,10 @@
 import configparser
-# from resources.items import Inventario
+
 from repository.read import Inventory
 from resources.welcome import Root
 from repository.add_item import Insert
 
-from flask_restful import Resource, Api
+from flask_restful import Api
 from repository.uri import db_uri
 import os
 from flask_pymongo import PyMongo
@@ -18,7 +18,7 @@ api = Api(app)
 
 api.add_resource(Root, "/")
 api.add_resource(Inventory, "/inventory")
-api.add_resource(Insert, "add-item")
+api.add_resource(Insert, "/add-item")
 
 mongodb_client = PyMongo(app, db_uri)
 db = mongodb_client.db
