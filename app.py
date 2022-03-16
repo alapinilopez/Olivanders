@@ -1,3 +1,4 @@
+import json
 from repository.connect import *
 from bson.objectid import ObjectId
 from bson import json_util
@@ -18,15 +19,16 @@ def index():
     return "Welcome to Olivanders!"
 
 
-# @app.route("/delete", methods=["DELETE"])
-# def delete_item():
-#     mongo.db.stock.delete_one({"_id": ObjectId(id)})
-#     response_delete = jsonify({"message": "item" + id + "deleted!"})
-#     return response_delete
+@app.route("/delete/", methods=["DELETE"])
+def delete_item():
+    id = json.loads(request.data.decode("UTF-8"))
+    mongo.db.stock.delete_one({"_id": ObjectId(id["_id"])})
+    response_delete = jsonify({"message": "item" + id["_id"] + "deleted!"})
+    return response_delete
 
 
-@app.route("/create", methods=["GET", "POST"])
-def create_item(self):
+@app.route("/create", methods=["POST"])
+def create_item():
     name = request.json["name"]
     sell_in = request.json["sell_in"]
     quality = request.json["quality"]
@@ -52,14 +54,6 @@ def get_items():
     items = mongo.db.stock.find()
     response_items = json_util.dumps(items)
     return Response(response_items, mimetype="application/json")
-
-
-@app.route("/delete", methods=["DELETE"])
-def delete_item(id):
-    mongo.db.stock.delete_one({"_id": ObjectId(id)})
-    response_delete = jsonify({"message": "Item" + id + "has been deleted!"})
-    response_delete.status_code = 200
-    return response_delete
 
 
 @app.route("/update", methods=["PUT"])
