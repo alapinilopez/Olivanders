@@ -1,34 +1,96 @@
-import configparser
-
-from repository.read import Inventory
-from resources.welcome import Root
-from repository.add_item import Insert
-
-from flask_restful import Api
-from repository.uri import db_uri
-import os
+from repository.connect import *
+from bson.objectid import ObjectId
+from bson import json_util
 from flask_pymongo import PyMongo
+from flask import Flask, jsonify, request, Response
+from crypt import methods
+import sys
+sys.path.append(".")
 
 
-
-from flask import Flask
 app = Flask(__name__)
-api = Api(app)
+app.config["MONGO_URI"] = db_uri
+mongo = PyMongo(app)
 
 
-api.add_resource(Root, "/")
-api.add_resource(Inventory, "/inventory")
-api.add_resource(Insert, "/add-item")
+@app.route("/")
+def index():
+    return "Welcome to Olivanders!"
 
-mongodb_client = PyMongo(app, db_uri)
-db = mongodb_client.db
 
-config = configparser.ConfigParser()
-config.read(os.path.abspath(os.path.join(".ini")))
+# @app.route("/delete", methods=["DELETE"])
+# def delete_item():
+#     mongo.db.stock.delete_one({"_id": ObjectId(id)})
+#     response_delete = jsonify({"message": "item" + id + "deleted!"})
+#     return response_delete
 
-if __name__ == '__main__':
+
+@app.route("/create", methods=["GET", "POST"])
+def create_item(self):
+    name = request.json["name"]
+    sell_in = request.json["sell_in"]
+    quality = request.json["quality"]
+
+    if name and sell_in and quality:
+        id = mongo.db.stock.insert(
+            {"name": name, "sell_in": sell_in, "quality": quality}
+        )
+        response_insert = jsonify({
+            "id": str(id),
+            "name": name,
+            "sell_in": sell_in,
+            "quality": quality
+        })
+        response_insert.status_code = 201
+        return response_insert
+    else:
+        return not_found
+
+
+@app.route("/inventory", methods=["GET"])
+def get_items():
+    items = mongo.db.stock.find()
+    response_items = json_util.dumps(items)
+    return Response(response_items, mimetype="application/json")
+
+
+@app.route("/delete", methods=["DELETE"])
+def delete_item(id):
+    mongo.db.stock.delete_one({"_id": ObjectId(id)})
+    response_delete = jsonify({"message": "Item" + id + "has been deleted!"})
+    response_delete.status_code = 200
+    return response_delete
+
+
+@app.route("/update", methods=["PUT"])
+def update_item(_id):
+    name = request.json["name"]
+    sell_in = request.json["sell_in"]
+    quality = request.json["quality"]
+    if name and sell_in and quality and _id:
+        mongo.db.stock.update_one(
+            {"_id": ObjectId(_id["$oid"]) if "$oid" in _id else ObjectId(_id)}, {
+                "$set": {"name": name,
+                "sell_in": sell_in,
+                "quality": quality}
+            })
+        response_update = jsonify({"message": "Item" + _id + "has been updated!"})
+        response_update.status_code = 200
+        return response_update
+    else:
+        return  not_found()
+
+
+@app.errorhandler(404)
+def not_found(error=None):
+    message = {
+        'message': 'Resource Not Found ' + request.url,
+        'status': 404
+    }
+    response_error = jsonify(message)
+    response_error.status_code = 404
+    return response_error
+
+
+if __name__ == "__main__":
     app.run(debug=True)
-    app.config["DEBUG"] = True
-    app.config["MONGO_URI"] = db_uri
-
-    app.run()
