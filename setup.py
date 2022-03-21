@@ -25,7 +25,6 @@ setuptools.setup (
         "filelock == 3.6.0",
         "Flask == 2.0.3",
         "Flask-PyMongo == 2.3.0",
-        "Flask-RESTful == 0.3.9",
         "iniconfig == 1.1.1",
         "itsdangerous == 2.1.1",
         "Jinja2 == 3.0.3",

@@ -10,6 +10,7 @@ from resources.stock import get_stock
 from resources.update import get_update
 from resources.welcome import get_index
 from resources.create import get_create_item
+from uri import db_uri
 
 import sys
 sys.path.append(".")
@@ -22,7 +23,7 @@ mongo = PyMongo(app)
 
 @app.route("/", methods=["GET"])
 def index():
-    return get_index()
+   return get_index()
 
 
 @app.route("/delete/", methods=["DELETE"])
